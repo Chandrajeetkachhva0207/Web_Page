@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 document.addEventListener('DOMContentLoaded', () => {
     // --- Sticky Header Effect ---
     const header = document.getElementById('header');
@@ -220,3 +221,92 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+=======
+const menuToggle = document.querySelector('.menu-toggle');
+const navLinks = document.querySelector('.nav-links');
+const themeToggle = document.getElementById('themeToggle');
+const contactForm = document.getElementById('contactForm');
+const formMessage = document.getElementById('formMessage');
+const revealItems = document.querySelectorAll('.reveal');
+
+menuToggle.addEventListener('click', () => {
+  navLinks.classList.toggle('open');
+});
+
+navLinks.querySelectorAll('a').forEach((link) => {
+  link.addEventListener('click', () => navLinks.classList.remove('open'));
+});
+
+const applyTheme = (dark) => {
+  document.body.classList.toggle('dark', dark);
+  themeToggle.textContent = dark ? '☀️' : '🌙';
+  localStorage.setItem('theme', dark ? 'dark' : 'light');
+};
+
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+  applyTheme(true);
+} else {
+  applyTheme(false);
+}
+
+themeToggle.addEventListener('click', () => {
+  applyTheme(!document.body.classList.contains('dark'));
+});
+
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dotsContainer = document.querySelector('.slider-dots');
+let activeIndex = 0;
+
+slides.forEach((_, index) => {
+  const dot = document.createElement('span');
+  dot.className = 'dot' + (index === 0 ? ' active' : '');
+  dot.dataset.index = index;
+  dot.addEventListener('click', () => showSlide(index));
+  dotsContainer.appendChild(dot);
+});
+
+function showSlide(index) {
+  activeIndex = (index + slides.length) % slides.length;
+  slides.forEach((slide, i) => slide.classList.toggle('active', i === activeIndex));
+  Array.from(dotsContainer.children).forEach((dot, i) => dot.classList.toggle('active', i === activeIndex));
+}
+
+setInterval(() => showSlide(activeIndex + 1), 4000);
+
+contactForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const name = document.getElementById('name').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const message = document.getElementById('message').value.trim();
+
+  if (!name || !email || !message) {
+    formMessage.textContent = 'Please complete all fields before sending.';
+    return;
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    formMessage.textContent = 'Please enter a valid email address.';
+    return;
+  }
+
+  formMessage.textContent = 'Thanks! Your message has been received.';
+  contactForm.reset();
+});
+
+const observer = new IntersectionObserver(
+  (entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  },
+  { threshold: 0.15 }
+);
+
+revealItems.forEach((item) => observer.observe(item));
+>>>>>>> 69d89f4 (Initial commit)
